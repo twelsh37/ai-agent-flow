@@ -1,13 +1,18 @@
+/* Import Tailwind CSS base styles */
 @tailwind base;
+/* Import Tailwind CSS component styles */
 @tailwind components;
+/* Import Tailwind CSS utility styles */
 @tailwind utilities;
 
+/* Define root variables for light mode */
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
 
+/* Define root variables for dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -16,6 +21,7 @@
   }
 }
 
+/* Define custom properties for the light theme */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -44,6 +50,8 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
+  /* Define custom properties for the dark theme */
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
@@ -72,10 +80,13 @@
   }
 }
 
+/* Apply base styles */
 @layer base {
+  /* Apply border color to all elements */
   * {
     @apply border-border;
   }
+  /* Apply background and text color to body */
   body {
     @apply bg-background text-foreground;
   }

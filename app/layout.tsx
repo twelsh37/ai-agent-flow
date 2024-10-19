@@ -5,12 +5,14 @@ import { Metadata } from 'next'
 /**
  * Inter font configuration
  * Loads the Inter font with the Latin subset for optimal performance
+ * @constant {Object} inter - The configured Inter font object
  */
 const inter = Inter({ subsets: ['latin'] })
 
 /**
  * Metadata for the application
  * This will be used by Next.js for SEO and document head management
+ * @constant {Metadata} metadata - The metadata object for the application
  */
 export const metadata: Metadata = {
   title: 'AI Chat Client',

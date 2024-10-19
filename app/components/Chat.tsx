@@ -3,27 +3,44 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 
+/**
+ * Props interface for the Chat component
+ */
 interface ChatProps {
   setMessages: React.Dispatch<React.SetStateAction<Array<{ role: string; content: string; model: string }>>>;
 }
 
+/**
+ * Interface representing a chat session
+ */
 interface Session {
   id: string;
   name: string;
   messages: Array<{ role: string; content: string; model: string }>;
 }
 
+/**
+ * Chat Component
+ * 
+ * This component handles user input, model selection, and chat session management.
+ * 
+ * @param {ChatProps} props - The properties passed to the component
+ * @returns {JSX.Element} The rendered Chat component
+ */
 const Chat: React.FC<ChatProps> = ({ setMessages }) => {
+  // Define available model families and their respective models
   const modelFamilies = {
     'OpenAI Models': ['gpt-4', 'gpt-4-turbo', 'gpt-4o-mini', 'gpt-3.5-turbo'],
     'Anthropic Models': ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307']
   }
 
+  // Define default models for each family
   const defaultModels = {
     'OpenAI Models': 'gpt-4',
     'Anthropic Models': 'claude-3-opus-20240229'
   }
 
+  // State variables
   const [modelFamily, setModelFamily] = useState('OpenAI Models')
   const [model, setModel] = useState(defaultModels['OpenAI Models'])
   const [input, setInput] = useState('')
@@ -33,10 +50,12 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
   const [isDeleteButtonActive, setIsDeleteButtonActive] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Effect to update model when model family changes
   useEffect(() => {
     setModel(defaultModels[modelFamily as keyof typeof defaultModels])
   }, [modelFamily])
 
+  // Effect to load saved sessions from localStorage
   useEffect(() => {
     const savedSessions = localStorage.getItem('chatSessions')
     if (savedSessions) {
@@ -55,20 +74,26 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
     }
   }, [setMessages])
 
+  // Effect to save sessions to localStorage when they change
   useEffect(() => {
     localStorage.setItem('chatSessions', JSON.stringify(sessions))
   }, [sessions])
 
+  // Effect to save the current session ID to localStorage
   useEffect(() => {
     if (currentSessionId) {
       localStorage.setItem('lastActiveSessionId', currentSessionId)
     }
   }, [currentSessionId])
 
+  // Effect to update delete button state
   useEffect(() => {
     setIsDeleteButtonActive(!!currentSessionId)
   }, [currentSessionId])
 
+  /**
+   * Starts a new chat session
+   */
   const startNewSession = () => {
     const newSession: Session = { 
       id: Date.now().toString(), 
@@ -81,6 +106,10 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
     setIsDeleteButtonActive(true)
   }
 
+  /**
+   * Loads an existing chat session
+   * @param {string} sessionId - The ID of the session to load
+   */
   const loadSession = (sessionId: string) => {
     setCurrentSessionId(sessionId)
     const session = sessions.find(s => s.id === sessionId)
@@ -90,6 +119,10 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
     setIsDeleteButtonActive(true)
   }
 
+  /**
+   * Deletes a chat session
+   * @param {string} sessionId - The ID of the session to delete
+   */
   const deleteSession = (sessionId: string) => {
     setSessions(prev => prev.filter(s => s.id !== sessionId))
     if (currentSessionId === sessionId) {
@@ -99,6 +132,10 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
     }
   }
 
+  /**
+   * Handles form submission (sending a message)
+   * @param {React.FormEvent} e - The form event
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
@@ -191,6 +228,7 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
 
   return (
     <div className="space-y-4 pb-2">
+      {/* Session management UI */}
       <div>
         <label className="block mb-2 font-bold text-sm">Session</label>
         <select 
@@ -217,6 +255,7 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
         </div>
       </div>
 
+      {/* Model family selection */}
       <div>
         <label className="block mb-2 font-bold text-sm">Model Family</label>
         <select 
@@ -230,6 +269,7 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
         </select>
       </div>
       
+      {/* Model selection */}
       <div>
         <label className="block mb-2 font-bold text-sm">Model</label>
         <select 
@@ -243,6 +283,7 @@ const Chat: React.FC<ChatProps> = ({ setMessages }) => {
         </select>
       </div>
       
+      {/* Message input form */}
       <form onSubmit={handleSubmit} className="space-y-2">
         <textarea
           ref={textareaRef}
