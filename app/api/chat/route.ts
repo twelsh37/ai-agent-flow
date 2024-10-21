@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     }
 
     // Return the generated response along with the session ID
-    return NextResponse.json({ response, sessionId });
+    return NextResponse.json({ response, sessionId }); // investigate returning all messages ?
   } catch (error: any) {
     // Log the error and return an error response
     console.error('Error:', error);
